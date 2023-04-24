@@ -1,0 +1,21 @@
+### Flask template
+instance/*
+!instance/.gitignore
+.webassets-cache
+app/.env
+
+### logs
+logs/
+
+### pyache
+__pycache__/
+.pytest_cache/
+
+### pycharm
+.idea/
+
+### sqlite
+app.db
+
+### firebase config
+app/config/firebase/
