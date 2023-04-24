@@ -49,10 +49,16 @@ def signup():
             user = firebase_auth.create_user(email=email, password=password)
             uid = user.uid
             Log.logger().info(f"User {uid} signed up")
-            return redirect(url_for("auth.login", _scheme="http", _external=True))
+            return redirect(
+                url_for(
+                    "auth.login",
+                    _scheme=os.environ.get("REDIRECT_PROTOCOL"),
+                    _external=True,
+                )
+            )
         except Exception as e:
             Log.logger().error(f"Error when signing up: {e}")
-            message = "Error when signing up, please try again"
+            message = "Error when signing up, the provided email already exists in the system, please try again"
             return render_template("login.html", message=message, form=form)
     return render_template("signup.html", form=form)
 
@@ -66,13 +72,19 @@ def login():
         password = request.form.get("password")
         try:
             user = pb.auth().sign_in_with_email_and_password(email, password)
-            Log.logger().info(f"User{user} logged in")
             uid = user["localId"]
+            Log.logger().info(f"User {uid} logged in")
             session["user_id"] = uid
-            return redirect(url_for("home.home_page", _scheme="http", _external=True))
+            return redirect(
+                url_for(
+                    "home.home_page",
+                    _scheme=os.environ.get("REDIRECT_PROTOCOL"),
+                    _external=True,
+                )
+            )
         except Exception as e:
             Log.logger().error(f"Error when logging in: {e}")
-            message = "Error when logging in, please try again"
+            message = "Error when logging in, please try again or sign up first"
             return render_template("login.html", message=message, form=form)
     return render_template("login.html", form=form)
 
@@ -88,4 +100,10 @@ def logout():
     user_id = session.get("user_id")
     session.clear()
     Log.logger().info(f"User {user_id} logged out")
-    return redirect(url_for("home.home_page", _scheme="http", _external=True))
+    return redirect(
+        url_for(
+            "home.home_page",
+            _scheme=os.environ.get("REDIRECT_PROTOCOL"),
+            _external=True,
+        )
+    )

@@ -10,9 +10,72 @@
           href="{{ url_for('static', filename='favicon.ico') }}"
           type="image/x-icon"
     >
-    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css"
+          rel="stylesheet"
+          type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{% block title %} {% endblock %}</title>
 </head>
 <body>
+    {# two different navi determined by if user has logined in #}
+    {% if "user_id" in session %}
+        {#    navi for logined user    #}
+        <div class="navbar bg-base-300">
+            <div class="flex-1">
+                <a class="btn btn-ghost normal-case text-xl">Flask-Scaffolding</a>
+            </div>
+            <div class="flex-none">
+                <div class="dropdown dropdown-end">
+                    <label tabindex="0"
+                           class="btn btn-ghost btn-circle avatar"
+                    >
+                        <div class="w-10 rounded-full">
+                            <img src="{{ url_for('static', filename='default_avatar.png') }}"/>
+                        </div>
+                    </label>
+                    <ul tabindex="0"
+                        class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+                    >
+                        <li>
+                            <a>Profile</a>
+                        </li>
+                        <li>
+                            <a>Settings</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('auth.logout') }}">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {#    navi for guest user    #}
+        <div class="navbar bg-base-300">
+            <div class="flex-1">
+                <a class="btn btn-ghost normal-case text-xl">Flask-Scaffolding</a>
+            </div>
+            <div class="navbar-end">
+                <a class="btn"
+                   onclick="window.location.href='{{ url_for('auth.auth') }}'"
+                >Login / Signup</a>
+            </div>
+        </div>
+    {% endif %}
 
+    {#    main content    #}
+    <div class="container mx-auto">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+
+    {#    footer    #}
+    <footer class="footer footer-center p-4 bg-base-300 text-base-content">
+        <div>
+            <p>Copyright © 2023 - All right reserved by Alex-Wang Industries Ltd</p>
+        </div>
+    </footer>
 </body>
 </html>
